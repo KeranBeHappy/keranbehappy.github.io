@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极简数字时钟</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Kindle数字时钟</title>
     <style>
         body {
             display: flex;
@@ -11,14 +11,14 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #333;
-            color: white;
+            background-color: #222;
+            color: #eee;
             font-family: Arial, sans-serif;
+            -webkit-text-size-adjust: none;
         }
         .clock {
-            font-size: clamp(5rem, 20vw, 15rem);
+            font-size: 15vw;
             text-align: center;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
