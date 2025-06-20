@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kindle电子时钟</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -33,6 +33,13 @@
             .clock-font {
                 font-family: 'Courier New', monospace;
             }
+            .kindle-screen {
+                max-width: 100%;
+                height: auto;
+                aspect-ratio: 3/4;
+                box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                border-radius: 8px;
+            }
             .date-font {
                 font-family: 'SimHei', 'WenQuanYi Micro Hei', 'Heiti TC', sans-serif;
             }
@@ -51,27 +58,20 @@
                 border-radius: 50%;
                 pointer-events: none;
             }
-            .celestial-animate {
-                transition: all 2s cubic-bezier(0.25, 0.1, 0.25, 1);
-            }
-            .pixel-display {
-                image-rendering: pixelated;
-                image-rendering: crisp-edges;
-            }
         }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-[720px] aspect-[9/16] bg-background text-primary rounded-lg shadow-lg overflow-hidden relative">
+    <div class="kindle-screen bg-background text-primary flex flex-col items-center justify-center">
         <!-- 标题 -->
-        <div class="text-center mb-8 mt-8">
+        <div class="text-center mb-8 w-full px-4">
             <h1 class="text-2xl font-bold mb-2">Kindle电子时钟</h1>
             <p class="text-accent text-sm">适配Kindle Paperwhite屏幕</p>
         </div>
         
         <!-- 时钟显示区域 -->
-        <div class="mb-10 text-center">
-            <div id="time" class="clock-font text-[clamp(2rem,8vw,5rem)] font-bold tracking-wider mb-2">00:00</div>
+        <div class="mb-10 text-center w-full px-4">
+            <div id="time" class="clock-font text-[clamp(2rem,8vw,6rem)] font-bold tracking-wider mb-2">00:00</div>
             <div id="date" class="date-font text-xl mb-1">2025年6月20日 星期五</div>
             <div id="lunar" class="date-font text-lg text-secondary">甲辰年五月廿五</div>
             <div id="location" class="date-font text-sm text-accent mt-1">北京时间 (GMT+8)</div>
@@ -98,7 +98,7 @@
         </div>
         
         <!-- 底部信息 -->
-        <div class="mt-auto mb-4 text-xs text-center text-gray-400">
+        <div class="mt-auto mb-4 text-xs text-center text-gray-400 w-full px-4">
             <p id="last-update">上次更新: 2025-06-20 15:30</p>
             <p>每小时自动刷新 | 电子时钟 v1.0</p>
         </div>
@@ -331,33 +331,20 @@
                 const currentHour = date.getHours() + date.getMinutes() / 60;
                 const totalDaylightHours = sunsetHour - sunriseHour;
                 
-                // 计算在24小时周期中的位置（0-1）
-                let position = (currentHour % 24) / 24;
+                // 计算在24小时周期中的位置（0-1），调整为从日出开始
+                let position = ((currentHour - sunriseHour) % 24 + 24) % 24 / 24;
                 
                 let celestialStatus = '夜晚';
                 let skyClass = 'sky-night';
-                let isDaytime = false;
                 
                 if (currentHour >= sunriseHour && currentHour <= sunsetHour) {
                     // 白天
                     celestialStatus = '白天';
                     skyClass = 'sky-day';
-                    isDaytime = true;
-                    
-                    // 调整白天的position范围为0-0.5
-                    position = (currentHour - sunriseHour) / totalDaylightHours / 2;
                 } else {
                     // 夜晚
                     celestialStatus = '夜晚';
                     skyClass = 'sky-night';
-                    isDaytime = false;
-                    
-                    // 调整夜晚的position范围为0.5-1
-                    if (currentHour > sunsetHour) {
-                        position = 0.5 + (currentHour - sunsetHour) / (24 - sunsetHour + sunriseHour) / 2;
-                    } else {
-                        position = 0.5 + (24 - sunsetHour + currentHour) / (24 - sunsetHour + sunriseHour) / 2;
-                    }
                 }
                 
                 return {
@@ -365,11 +352,7 @@
                     status: celestialStatus,
                     skyClass: skyClass,
                     sunrise: formatTime(sunriseHour),
-                    sunset: formatTime(sunsetHour),
-                    sunriseHour: sunriseHour,
-                    sunsetHour: sunsetHour,
-                    currentHour: currentHour,
-                    isDaytime: isDaytime
+                    sunset: formatTime(sunsetHour)
                 };
             } catch (error) {
                 console.error('计算天体位置错误:', error);
@@ -378,11 +361,7 @@
                     status: '计算错误',
                     skyClass: 'sky-day',
                     sunrise: '06:00',
-                    sunset: '18:00',
-                    sunriseHour: 6,
-                    sunsetHour: 18,
-                    currentHour: (new Date().getHours() + new Date().getMinutes() / 60),
-                    isDaytime: true
+                    sunset: '18:00'
                 };
             }
         }
@@ -397,7 +376,7 @@
         // 创建太阳带光芒的像素图形
         function createSunWithRays() {
             const sun = document.createElement('div');
-            sun.className = 'relative w-full h-full pixel-display';
+            sun.className = 'relative w-full h-full';
             
             // 太阳本体
             const sunBody = document.createElement('div');
@@ -432,7 +411,7 @@
         // 创建月亮（月牙）的像素图形
         function createMoon() {
             const moon = document.createElement('div');
-            moon.className = 'relative w-full h-full pixel-display';
+            moon.className = 'relative w-full h-full';
             
             // 月亮本体
             const moonBody = document.createElement('div');
@@ -448,7 +427,7 @@
         }
 
         // 更新太阳/月亮位置动画
-        function updateCelestialAnimation(date, animate = true) {
+        function updateCelestialAnimation(date) {
             try {
                 const celestialInfo = calculateCelestialPosition(date);
                 const sky = document.getElementById('sky');
@@ -478,54 +457,26 @@
                     celestialBody.removeChild(celestialBody.firstChild);
                 }
                 
-                // 根据时间决定显示太阳还是月亮
-                if (celestialInfo.isDaytime) {
-                    // 白天，显示太阳
+                // 根据位置决定显示太阳还是月亮
+                if (celestialInfo.position >= 0 && celestialInfo.position <= 0.5) {
+                    // 上半圆，显示太阳
                     celestialBody.appendChild(createSunWithRays());
                 } else {
-                    // 夜晚，显示月亮
+                    // 下半圆，显示月亮
                     celestialBody.appendChild(createMoon());
                 }
                 
-                // 移除之前的动画类
-                celestialBody.classList.remove('celestial-animate');
+                // 角度计算（0-2π），调整为从东方开始
+                const angle = (celestialInfo.position * Math.PI * 2) - (Math.PI / 2);
                 
-                // 如果不需要动画，直接设置位置
-                if (!animate) {
-                    // 角度计算（0-2π）
-                    const angle = celestialInfo.position * Math.PI * 2;
-                    
-                    // 圆周运动位置计算
-                    const x = centerX + radius * Math.cos(angle);
-                    const y = centerY + radius * Math.sin(angle);
-                    
-                    // 设置天体位置，考虑元素自身尺寸的居中
-                    const celestialSize = celestialBody.offsetWidth;
-                    celestialBody.style.left = `${x - (celestialSize / 2)}px`;
-                    celestialBody.style.top = `${y - (celestialSize / 2)}px`;
-                    return;
-                }
+                // 圆周运动位置计算，确保太阳圆心精确位于轨迹上
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
                 
-                // 强制回流
-                void celestialBody.offsetWidth;
-                
-                // 添加动画类
-                celestialBody.classList.add('celestial-animate');
-                
-                // 计算当前位置（角度）
-                const currentAngle = celestialInfo.position * Math.PI * 2;
-                const currentX = centerX + radius * Math.cos(currentAngle);
-                const currentY = centerY + radius * Math.sin(currentAngle);
-                
-                // 设置动画持续时间
-                celestialBody.style.transitionDuration = '2s';
-                
-                // 设置最终位置（当前时间对应的位置）
-                setTimeout(() => {
-                    const celestialSize = celestialBody.offsetWidth;
-                    celestialBody.style.left = `${currentX - (celestialSize / 2)}px`;
-                    celestialBody.style.top = `${currentY - (celestialSize / 2)}px`;
-                }, 10);
+                // 设置天体位置，考虑元素自身尺寸的居中
+                const celestialSize = celestialBody.offsetWidth;
+                celestialBody.style.left = `${x - (celestialSize / 2)}px`;
+                celestialBody.style.top = `${y - (celestialSize / 2)}px`;
                 
                 // 更新状态文本
                 sunStatus.textContent = `日出: ${celestialInfo.sunrise} | 日落: ${celestialInfo.sunset}`;
@@ -534,40 +485,71 @@
             }
         }
 
-        // 更新时钟显示
-        function updateClock() {
-            const now = new Date();
-            
-            // 更新时间显示
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('time').textContent = `${hours}:${minutes}`;
-            
-            // 更新日期显示
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const weekday = weekdays[now.getDay()];
-            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekday}`;
-            
-            // 更新农历显示
-            const lunar = new LunarCalendar().solarToLunar(now);
-            document.getElementById('lunar').textContent = lunar.fullName;
-            
-            // 更新最后更新时间
-            const lastUpdate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${hours}:${minutes}`;
-            document.getElementById('last-update').textContent = `上次更新: ${lastUpdate}`;
-            
-            // 更新太阳/月亮动画
-            updateCelestialAnimation(now, true);
+        // 更新时间和农历信息
+        function updateDateTime() {
+            try {
+                // 使用北京时间（GMT+8）
+                const now = new Date();
+                const beijingTime = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (8 * 3600000));
+                
+                const lunar = new LunarCalendar();
+                const lunarDate = lunar.solarToLunar(beijingTime);
+                
+                // 更新时间（只显示小时和分钟）
+                const hours = String(beijingTime.getHours()).padStart(2, '0');
+                const minutes = String(beijingTime.getMinutes()).padStart(2, '0');
+                document.getElementById('time').textContent = `${hours}:${minutes}`;
+                
+                // 更新日期
+                const year = beijingTime.getFullYear();
+                const month = beijingTime.getMonth() + 1;
+                const date = beijingTime.getDate();
+                const weekday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][beijingTime.getDay()];
+                document.getElementById('date').textContent = `${year}年${month}月${date}日 ${weekday}`;
+                
+                // 更新农历
+                document.getElementById('lunar').textContent = lunarDate.fullName;
+                
+                // 更新最后更新时间
+                document.getElementById('last-update').textContent = `上次更新: ${year}-${String(month).padStart(2, '0')}-${String(date).padStart(2, '0')} ${hours}:${minutes}`;
+                
+                // 更新太阳/月亮动画
+                updateCelestialAnimation(beijingTime);
+            } catch (error) {
+                console.error('更新时间失败:', error);
+                document.getElementById('time').textContent = '时间更新错误';
+                document.getElementById('date').textContent = '日期更新错误';
+                document.getElementById('lunar').textContent = '农历更新错误';
+            }
         }
 
-        // 初始化时钟
-        updateClock();
-        
-        // 每分钟更新一次时钟
-        setInterval(updateClock, 60000);
+        // 初始化函数
+        function init() {
+            try {
+                // 初始化时间、农历和太阳/月亮动画
+                updateDateTime();
+                
+                // 每分钟更新一次
+                setInterval(updateDateTime, 60000);
+                
+                // 窗口大小变化时重新计算轨迹
+                window.addEventListener('resize', function() {
+                    // 添加防抖处理，避免频繁计算
+                    clearTimeout(window.resizeTimeout);
+                    window.resizeTimeout = setTimeout(function() {
+                        updateCelestialAnimation(new Date());
+                    }, 200);
+                });
+            } catch (error) {
+                console.error('初始化失败:', error);
+                document.getElementById('time').textContent = '初始化错误';
+                document.getElementById('date').textContent = '请检查控制台错误信息';
+                document.getElementById('lunar').textContent = '';
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>
+</html>    
