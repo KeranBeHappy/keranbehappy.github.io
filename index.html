@@ -3,252 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数字时钟</title>
-    <script>
-        // 农历计算相关函数
-        function getLunarDate(date) {
-            // 农历数据
-            const lunarInfo = [
-                0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
-                0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
-                0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
-                0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,
-                0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557,
-                0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5d0, 0x14573, 0x052d0, 0x0a9a8, 0x0e950, 0x06aa0,
-                0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0,
-                0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b5a0, 0x195a6,
-                0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570,
-                0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x055c0, 0x0ab60, 0x096d5, 0x092e0,
-                0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5,
-                0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930,
-                0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530,
-                0x05aa0, 0x076a3, 0x096d0, 0x04bd7, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45,
-                0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0
-            ];
-            const lunarMonthName = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
-            const lunarDayName = ['初', '十', '廿', '卅'];
-            const lunarDayNum = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const day = date.getDate();
-
-            let totalDays, lunarYear, lunarMonth, lunarDay;
-            let isLeap = false;
-
-            // 计算从1900年1月31日开始的总天数
-            totalDays = (year - 1900) * 365 + Math.floor((year - 1900) / 4) + day;
-            for (let i = 0; i < month; i++) {
-                totalDays += [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][i];
-            }
-            if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
-                if (month > 1) totalDays += 1;
-            }
-
-            // 从1900年开始计算农历年份
-            lunarYear = 1900;
-            let days = 348; // 1900年农历正月初一到1900年1月31日的天数
-            while (totalDays > days) {
-                let yearDays = 348;
-                let leapMonth = (lunarInfo[lunarYear - 1900] & 0xf);
-                let leapDays = 0;
-
-                // 计算该年的总天数
-                for (let i = 0x8000; i > 0x8; i >>= 1) {
-                    yearDays += (lunarInfo[lunarYear - 1900] & i) ? 1 : 0;
-                }
-
-                // 如果该年有闰月，计算闰月的天数
-                if (leapMonth > 0) {
-                    leapDays = ((lunarInfo[lunarYear - 1900] & 0x10000) ? 30 : 29);
-                }
-
-                // 如果该年天数加上之前的天数大于总天数，说明找到了农历年份
-                if (yearDays + leapDays + days < totalDays) {
-                    days += yearDays + leapDays;
-                    lunarYear++;
-                } else {
-                    // 计算农历月份和日期
-                    let monthDays;
-                    let foundMonth = false;
-
-                    // 遍历该年的每个月
-                    for (let i = 1; i <= 12; i++) {
-                        monthDays = 29;
-                        if ((lunarInfo[lunarYear - 1900] & (0x10000 >> (i - 1))) !== 0) {
-                            monthDays = 30;
-                        }
-
-                        // 如果是闰月
-                        if (isLeap) {
-                            monthDays = leapDays;
-                            isLeap = false;
-                        }
-
-                        // 如果是闰月且还没处理过
-                        if (leapMonth > 0 && i === leapMonth && !foundMonth) {
-                            i--;
-                            isLeap = true;
-                            foundMonth = true;
-                            continue;
-                        }
-
-                        // 如果加上这个月的天数超过总天数，说明找到了农历月份和日期
-                        if (totalDays <= days + monthDays) {
-                            lunarMonth = i;
-                            lunarDay = totalDays - days;
-                            break;
-                        }
-
-                        days += monthDays;
-                    }
-                    break;
-                }
-            }
-
-            // 转换农历月份和日期为中文
-            let lunarMonthStr = isLeap ? '闰' + lunarMonthName[lunarMonth - 1] + '月' : lunarMonthName[lunarMonth - 1] + '月';
-            let lunarDayStr;
-
-            if (lunarDay === 20) {
-                lunarDayStr = '二十';
-            } else if (lunarDay === 30) {
-                lunarDayStr = '三十';
-            } else {
-                const d = lunarDay % 10;
-                const tens = Math.floor(lunarDay / 10);
-                lunarDayStr = lunarDayName[tens] + (d === 0 ? '' : lunarDayNum[d - 1]);
-            }
-
-            return {
-                year: lunarYear,
-                month: lunarMonthStr,
-                day: lunarDayStr,
-                isLeap: isLeap
-            };
-        }
-
-        // 更新时钟显示
-        function updateClock() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const year = now.getFullYear();
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const day = now.getDate().toString().padStart(2, '0');
-            const weekDay = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'][now.getDay()];
-
-            // 获取农历日期
-            const lunarDate = getLunarDate(now);
-            const lunarDateStr = `${lunarDate.month}${lunarDate.day}`;
-
-            // 更新显示
-            document.getElementById('time').textContent = `${hours}:${minutes}`;
-            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekDay}`;
-            document.getElementById('lunar-date').textContent = `农历 ${lunarDateStr}`;
-        }
-
-        // 初始化时钟并设置定时器每分钟更新一次
-        window.onload = function() {
-            updateClock();
-            setInterval(updateClock, 60000); // 每分钟更新一次
-        };
-    </script>
+    <title>极简数字时钟</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: #121212;
-            font-family: 'Microsoft YaHei', sans-serif;
+            height: 100vh;
+            margin: 0;
+            background-color: #333;
             color: white;
+            font-family: Arial, sans-serif;
+        }
+        .clock {
+            font-size: clamp(5rem, 20vw, 15rem);
             text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .clock-container {
-            width: 100%;
-            max-width: 800px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        #time {
-            font-size: clamp(5rem, 15vw, 10rem);
-            font-weight: bold;
-            margin: 20px 0;
-            letter-spacing: 5px;
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-
-        #date {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            margin: 15px 0;
-            color: #e0e0e0;
-        }
-
-        #lunar-date {
-            font-size: clamp(1.2rem, 3vw, 2rem);
-            margin: 10px 0;
-            color: #bdbdbd;
-        }
-
-        /* 适配不同屏幕尺寸 */
-        @media (max-width: 768px) {
-            .clock-container {
-                padding: 25px;
-            }
-
-            #time {
-                font-size: clamp(3rem, 12vw, 5rem);
-                letter-spacing: 3px;
-            }
-
-            #date {
-                font-size: clamp(1.2rem, 4vw, 1.8rem);
-            }
-
-            #lunar-date {
-                font-size: clamp(1rem, 3vw, 1.5rem);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .clock-container {
-                padding: 20px;
-            }
-
-            #time {
-                font-size: clamp(2.5rem, 10vw, 4rem);
-                letter-spacing: 2px;
-            }
-
-            #date {
-                font-size: clamp(1rem, 3vw, 1.5rem);
-            }
-
-            #lunar-date {
-                font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-            }
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 <body>
-    <div class="clock-container">
-        <div id="time">--:--</div>
-        <div id="date">----年--月--日 ---</div>
-        <div id="lunar-date">农历 ----</div>
-    </div>
+    <div class="clock" id="time"></div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('time').textContent = `${hours}:${minutes}`;
+        }
+        updateTime();
+        setInterval(updateTime, 60000);
+    </script>
 </body>
 </html>
     
