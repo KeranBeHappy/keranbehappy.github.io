@@ -1,101 +1,142 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
     <title>Kindle电子时钟</title>
     <style>
-        body {
-            font-family: "Amazon Ember", Arial, sans-serif;
-            color: #222;
-            text-align: center;
-            padding: 0px;
-            margin: 0;
-            height: 100vh;
-        }
-        
-        .clock-container {
-            max-width: 100vw;
-            height: auto;
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10vh;
-            padding-top:20px;
-        }
-        
-        .time-display {
-            font-size: 14rem;
-            font-weight: bold;
-            margin: 10px 0;
-            color: #000;
-            letter-spacing: 3px;
-            line-height: 1.2;
-        }
-        
-        .date-display {
-            font-size: 5rem;
-            margin: 10px 0 5px;
-            color: #333;
-        }
-        
-        .week-display {
-            font-size: 4rem;
-            margin: 5px 0 15px;
-            color: #666;
-            font-style: normal;
-            font-style: italic;
-        }
-        
-        .note {
-            font-size: 0.9rem;
-            color: #999;
-            margin-top: 15px;
-            line-height: 1.4;
-            padding: 0 10px;
-            font-style: italic;
-        }
+      body {
+        font-family: 'Amazon Ember', Arial, sans-serif;
+        color: #222;
+        text-align: center;
+        padding: 0px;
+        margin: 0;
+        height: 100vh;
+      }
+
+      .clock-container {
+        max-width: 100vw;
+        height: auto;
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10vh;
+        padding-top: 20px;
+      }
+
+      .time-display {
+        font-size: 14rem;
+        font-weight: bold;
+        margin: 10px 0;
+        color: #000;
+        varter-spacing: 3px;
+        line-height: 1.2;
+      }
+
+      .date-display {
+        font-size: 5rem;
+        margin: 10px 0 5px;
+        color: #333;
+      }
+
+      .week-display {
+        font-size: 4rem;
+        margin: 5px 0 15px;
+        color: #666;
+        font-style: normal;
+        font-style: italic;
+      }
+
+      .note {
+        font-size: 0.9rem;
+        color: #999;
+        margin-top: 15px;
+        line-height: 1.4;
+        padding: 0 10px;
+        font-style: italic;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="clock-container">
-        <h3 style="color: #004B8D; margin: 10px 0 15px; font-size: 1.3rem;">Kindle电子时钟</h3>
-        <div class="time-display" id="time">00:00</div>
-        <div class="date-display" id="date">2025年01月01日</div>
-        <div class="week-display" id="week">星期六</div>
+      <h3 style="color: #004b8d; margin: 10px 0 15px; font-size: 1.3rem">
+        Kindle电子时钟
+      </h3>
+      <div class="time-display" id="time">00:00</div>
+      <div class="date-display" id="date">2025年01月01日</div>
+      <div class="week-display" id="week">星期六</div>
     </div>
-    
     <div class="note">
-        <p>专为Kindle屏幕优化，显示清晰易读，每分钟更新一次。</p>
-        <p>发布时间：2025年6月21日17:06:05</p>
+      <div class="status" id="status">初始化中...</div>
+      <p>发布时间: 2025年6月21日17:06:05</p>
     </div>
-
     <script>
-        var weekArray = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-        
-        function updateTime() {
-          alert('1')
-            var now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            
-            hours = hours < 10 ? "0" + hours : hours;
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            
-            document.getElementById("time").textContent = hours + ":" + minutes;
-            
-            var year = now.getFullYear();
-            let month = now.getMonth() + 1;
-            let day = now.getDate();
-            month = month < 10 ? "0" + month : month;
-            day = day < 10 ? "0" + day : day;
-            document.getElementById("date").textContent = year + "年" + month + "月" + day + "日";
-            var weekIndex = now.getDay();
-            document.getElementById("week").textContent = weekArray[weekIndex];
+      // 日志函数 - 尝试通过DOM显示状态
+      function logStatus(message) {
+        var statusEl = document.getElementById('status')
+        if (statusEl) {
+          statusEl.textContent = message
         }
+      }
+      var weekArray = [
+        '星期日',
+        '星期一',
+        '星期二',
+        '星期三',
+        '星期四',
+        '星期五',
+        '星期六'
+      ]
 
-        updateTime();
-        setInterval(updateTime, 60000);
+      function updateTime() {
+        try {
+          var now = new Date()
+          var hours = now.getHours()
+          var minutes = now.getMinutes()
+
+          hours = hours < 10 ? '0' + hours : hours
+          minutes = minutes < 10 ? '0' + minutes : minutes
+
+          document.getElementById('time').textContent = hours + ':' + minutes
+
+          var year = now.getFullYear()
+          var month = now.getMonth() + 1
+          var day = now.getDate()
+          month = month < 10 ? '0' + month : month
+          day = day < 10 ? '0' + day : day
+          document.getElementById('date').textContent =
+            year + '年' + month + '月' + day + '日'
+
+          var weekIndex = now.getDay()
+          document.getElementById('week').textContent = weekArray[weekIndex]
+
+          logStatus('上次更新: ' + now.toLocavarimeString())
+        } catch (error) {
+          logStatus('更新失败: ' + error.message)
+        }
+      }
+
+      try {
+        updateTime()
+        logStatus('时钟已启动，每分钟更新一次')
+
+        // 使用不同的定时器实现方式
+        if (typeof setInterval === 'function') {
+          setInterval(updateTime, 60000)
+        } else {
+          // 备用方案：使用setTimeout循环
+          function loopUpdate() {
+            updateTime()
+            setTimeout(loopUpdate, 60000)
+          }
+          setTimeout(loopUpdate, 60000)
+        }
+      } catch (error) {
+        logStatus('初始化失败: ' + error.message)
+      }
     </script>
-</body>
+  </body>
 </html>
