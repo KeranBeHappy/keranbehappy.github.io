@@ -93,23 +93,14 @@
 
       function updateTime() {
         try {
-          var now = new Date()
+          // 获取当前UTC时间
+          var utcNow = new Date()
 
-          // 获取设备当前时区偏移（分钟）
-          var deviceTimezoneOffset = now.getTimezoneOffset()
+          // 添加8小时偏移量（UTC+8）
+          var beijingTime = new Date(utcNow.getTime() + 8 * 60 * 60 * 1000)
 
-          // 计算北京时间偏移（UTC+8，即-480分钟）
-          var beijingTimezoneOffset = -480
-
-          // 计算需要调整的毫秒数
-          var offsetMs =
-            (beijingTimezoneOffset - deviceTimezoneOffset) * 60 * 1000
-
-          // 创建调整后的日期对象
-          var adjustedDate = new Date(now.getTime() + offsetMs)
-
-          var hours = adjustedDate.getHours()
-          var minutes = adjustedDate.getMinutes()
+          var hours = beijingTime.getHours()
+          var minutes = beijingTime.getMinutes()
 
           if (hours < 10) {
             hours = '0' + hours
@@ -120,9 +111,9 @@
 
           document.getElementById('time').textContent = hours + ':' + minutes
 
-          var year = adjustedDate.getFullYear()
-          var month = adjustedDate.getMonth() + 1
-          var day = adjustedDate.getDate()
+          var year = beijingTime.getFullYear()
+          var month = beijingTime.getMonth() + 1
+          var day = beijingTime.getDate()
 
           if (month < 10) {
             month = '0' + month
@@ -134,10 +125,10 @@
           document.getElementById('date').textContent =
             year + '年' + month + '月' + day + '日'
 
-          var weekIndex = adjustedDate.getDay()
+          var weekIndex = beijingTime.getDay()
           document.getElementById('week').textContent = weekArray[weekIndex]
 
-          logStatus('上次更新: ' + adjustedDate.toLocaleTimeString())
+          logStatus('上次更新: ' + beijingTime.toLocaleTimeString())
         } catch (error) {
           logStatus('更新失败: ' + error.message)
         }
