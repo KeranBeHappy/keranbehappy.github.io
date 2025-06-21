@@ -70,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日20:39:11</p>
+      <p>发布时间: 2025年6月21日20:56:18</p>
     </div>
     <script>
       // 定义全局变量
@@ -83,8 +83,9 @@
         '星期五',
         '星期六'
       ]
-      var currentMinute = null  // 储存初始化分钟数
-      var tickInterval = null  // 秒级刷新定时器
+      var currentMinute = null // 储存初始化分钟数
+      var tickInterval = null // 秒级刷新定时器
+      var isSynced = false // 同步时间标识
 
       // 日志函数实现
       function logStatus(message) {
@@ -128,21 +129,27 @@
           function tick() {
             var now = new Date()
             var adjustedTime = new Date(now.getTime() + offsetMs)
+            updateDOM(adjustedTime)
 
-            // 每分钟的第一秒更新DOM
-            if (adjustedTime.getMinutes() !== currentMinute) {
-              currentMinute = adjustedTime.getMinutes() // 同步当前分钟数
-              updateDOM(adjustedTime)
+            if (!isSynced) {
+              // 每分钟的第一秒更新DOM
+              if (adjustedTime.getMinutes() !== currentMinute) {
+                currentMinute = adjustedTime.getMinutes() // 同步当前分钟数
+                isSynced = true
+                clearInterval(tickInterval)
+                // 设置每分钟更新一次
+                tickInterval = setInterval(tick, 60000)
+                logStatus('已完成秒级同步，切换到每分钟更新')
+              }
             }
           }
 
-          // 每10秒执行一次时间获取
-          tickInterval = setInterval(tick, 5000)
+          // 每秒执行一次时间获取
+          tickInterval = setInterval(tick, 1000)
         } catch (error) {
           logStatus('更新失败: ' + error.message)
         }
       }
-      updateTime()
 
       // DOM更新逻辑
       function updateDOM(time) {
@@ -178,11 +185,17 @@
           document.getElementById('week').textContent = weekArray[weekIndex]
 
           // 使用调整后的时间更新状态
-          logStatus('上次更新: ' + time.toLocaleTimeString())
+          if (!isSynced) {
+            logStatus('开始同步时间，每秒更新一次...')
+          } else {
+            logStatus('上次更新: ' + time.toLocaleTimeString())
+          }
         } catch (error) {
           logStatus('DOM更新失败: ' + error.message)
         }
       }
+
+      updateTime()
     </script>
   </body>
 </html>
