@@ -28,7 +28,7 @@
       }
 
       .time-display {
-        font-size: 14rem;
+        font-size: 15rem;
         font-weight: bold;
         margin: 10px 0;
         color: #000;
@@ -91,7 +91,7 @@
         '星期六'
       ]
 
-      function updateTime() {
+      function getTimeBySecond(status = 'run') {
         try {
           // 获取当前UTC时间
           var utcNow = new Date()
@@ -99,55 +99,59 @@
           // 添加8小时偏移量（UTC+8）
           var beijingTime = new Date(utcNow.getTime() + 8 * 60 * 60 * 1000)
 
-          var hours = beijingTime.getHours()
-          var minutes = beijingTime.getMinutes()
+          var seconds = beijingTime.getSeconds()
 
-          if (hours < 10) {
-            hours = '0' + hours
+          if (status === 'init' || seconds == 0) {
+            // 同步时分
+            var hours = beijingTime.getHours()
+            var minutes = beijingTime.getMinutes()
+
+            if (hours < 10) {
+              hours = '0' + hours
+            }
+            if (minutes < 10) {
+              minutes = '0' + minutes
+            }
+            document.getElementById('time').textContent = hours + ':' + minutes
+
+            // 同步年月日
+            var year = beijingTime.getFullYear()
+            var month = beijingTime.getMonth() + 1
+            var day = beijingTime.getDate()
+
+            if (month < 10) {
+              month = '0' + month
+            }
+            if (day < 10) {
+              day = '0' + day
+            }
+            document.getElementById('date').textContent =  year + '年' + month + '月' + day + '日'
+
+            // 同步星期
+            var weekIndex = beijingTime.getDay()
+            document.getElementById('week').textContent = weekArray[weekIndex]
+
+            logStatus('上次更新: ' + beijingTime.toLocaleTimeString())
           }
-          if (minutes < 10) {
-            minutes = '0' + minutes
-          }
-
-          document.getElementById('time').textContent = hours + ':' + minutes
-
-          var year = beijingTime.getFullYear()
-          var month = beijingTime.getMonth() + 1
-          var day = beijingTime.getDate()
-
-          if (month < 10) {
-            month = '0' + month
-          }
-
-          if (day < 10) {
-            day = '0' + day
-          }
-          document.getElementById('date').textContent =
-            year + '年' + month + '月' + day + '日'
-
-          var weekIndex = beijingTime.getDay()
-          document.getElementById('week').textContent = weekArray[weekIndex]
-
-          logStatus('上次更新: ' + beijingTime.toLocaleTimeString())
         } catch (error) {
           logStatus('更新失败: ' + error.message)
         }
       }
 
       try {
-        updateTime()
+        getTimeBySecond('init')
         logStatus('时钟已启动，每分钟更新一次')
 
         // 使用不同的定时器实现方式
         if (typeof setInterval === 'function') {
-          setInterval(updateTime, 60000)
+          setInterval(getTimeBySecond, 1000)
         } else {
           // 备用方案：使用setTimeout循环
           function loopUpdate() {
-            updateTime()
-            setTimeout(loopUpdate, 60000)
+            getTimeBySecond()
+            setTimeout(loopUpdate, 1000)
           }
-          setTimeout(loopUpdate, 60000)
+          setTimeout(loopUpdate, 1000)
         }
       } catch (error) {
         logStatus('初始化失败: ' + error.message)
