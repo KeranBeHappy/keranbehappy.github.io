@@ -68,13 +68,14 @@
     <div class="note">
         <p>专为Kindle屏幕优化，显示清晰易读，每分钟更新一次。</p>
         <p>适合在阅读间隙查看时间，不影响设备续航。</p>
+        <p>16:46:50</p>
     </div>
 
     <script>
-        const weekArray = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        var weekArray = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
         
         function updateTime() {
-            const now = new Date();
+            var now = new Date();
             let hours = now.getHours();
             let minutes = now.getMinutes();
             
@@ -83,14 +84,14 @@
             
             document.getElementById("time").textContent = hours + ":" + minutes;
             
-            const year = now.getFullYear();
+            var year = now.getFullYear();
             let month = now.getMonth() + 1;
             let day = now.getDate();
             month = month < 10 ? "0" + month : month;
             day = day < 10 ? "0" + day : day;
             document.getElementById("date").textContent = year + "年" + month + "月" + day + "日";
             
-            const weekIndex = now.getDay();
+            var weekIndex = now.getDay();
             document.getElementById("week").textContent = weekArray[weekIndex];
         }
 
