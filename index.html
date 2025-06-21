@@ -70,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日20:24:31</p>
+      <p>发布时间: 2025年6月21日20:30:16</p>
     </div>
     <script>
       // 定义全局变量
@@ -83,8 +83,8 @@
         '星期五',
         '星期六'
       ]
-      var currentMinute = null
-      var tickInterval = null
+      var currentMinute = null  // 储存初始化分钟数
+      var tickInterval = null  // 秒级刷新定时器
 
       // 日志函数实现
       function logStatus(message) {
@@ -127,16 +127,16 @@
           // 每秒执行的轻量级时间获取
           function tick() {
             var now = new Date()
-            var adjustedTime = new Date(now.getTime() + 8 * 60 * 60 * 1000)
+            var adjustedTime = new Date(utcNow.getTime() + offsetMs)
 
             // 每分钟的第一秒更新DOM
             if (adjustedTime.getMinutes() !== currentMinute) {
-              currentMinute = adjustedTime.getMinutes()
+              currentMinute = adjustedTime.getMinutes() // 同步当前分钟数
               updateDOM(adjustedTime)
             }
           }
 
-          // 每秒执行一次轻量级时间获取
+          // 每秒执行一次时间获取
           tickInterval = setInterval(tick, 1000)
         } catch (error) {
           logStatus('更新失败: ' + error.message)
@@ -150,7 +150,7 @@
           var hours = time.getHours()
           var minutes = time.getMinutes()
 
-          // 格式化时间显示
+          // 更新时间
           if (hours < 10) {
             hours = '0' + hours
           }
@@ -160,7 +160,7 @@
 
           document.getElementById('time').textContent = hours + ':' + minutes
 
-          // 更新日期显示
+          // 更新日期
           var year = time.getFullYear()
           var month = time.getMonth() + 1
           var day = time.getDate()
@@ -173,7 +173,7 @@
           document.getElementById('date').textContent =
             year + '年' + month + '月' + day + '日'
 
-          // 更新星期显示
+          // 更新星期
           var weekIndex = time.getDay()
           document.getElementById('week').textContent = weekArray[weekIndex]
 
