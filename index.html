@@ -3,37 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Kindle数字时钟</title>
+    <title>Kindle电子时钟</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #222;
-            color: #eee;
-            font-family: Arial, sans-serif;
-            -webkit-text-size-adjust: none;
-        }
-        .clock {
-            font-size: 15vw;
+            font-family: "Amazon Ember", Arial, sans-serif;
+            background-color: #e6e6e6;
+            color: #222;
             text-align: center;
+            padding: 10px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .clock-container {
+            max-width: 90%;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .time-display {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #004B8D;
+            letter-spacing: 3px;
+            line-height: 1.2;
+        }
+        
+        .date-display {
+            font-size: 1.8rem;
+            margin: 10px 0 5px;
+            color: #333;
+        }
+        
+        .week-display {
+            font-size: 1.5rem;
+            margin: 5px 0 15px;
+            color: #555;
+            font-style: normal;
+        }
+        
+        .note {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 15px;
+            line-height: 1.4;
+            padding: 0 10px;
         }
     </style>
 </head>
 <body>
-    <div class="clock" id="time"></div>
+    <div class="clock-container">
+        <h3 style="color: #004B8D; margin: 10px 0 15px; font-size: 1.3rem;">Kindle电子时钟</h3>
+        <div class="time-display" id="time">00:00</div>
+        <div class="date-display" id="date">2025年01月01日</div>
+        <div class="week-display" id="week">星期六</div>
+    </div>
+    
+    <div class="note">
+        <p>专为Kindle屏幕优化，显示清晰易读，每分钟更新一次。</p>
+        <p>适合在阅读间隙查看时间，不影响设备续航。</p>
+    </div>
+
     <script>
+        const weekArray = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        
         function updateTime() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('time').textContent = `${hours}:${minutes}`;
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            
+            document.getElementById("time").textContent = hours + ":" + minutes;
+            
+            const year = now.getFullYear();
+            let month = now.getMonth() + 1;
+            let day = now.getDate();
+            month = month < 10 ? "0" + month : month;
+            day = day < 10 ? "0" + day : day;
+            document.getElementById("date").textContent = year + "年" + month + "月" + day + "日";
+            
+            const weekIndex = now.getDay();
+            document.getElementById("week").textContent = weekArray[weekIndex];
         }
+
         updateTime();
         setInterval(updateTime, 60000);
     </script>
 </body>
 </html>
-    
