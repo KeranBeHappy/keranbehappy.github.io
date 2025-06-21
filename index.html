@@ -70,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日20:33:46</p>
+      <p>发布时间: 2025年6月21日20:39:11</p>
     </div>
     <script>
       // 定义全局变量
@@ -113,7 +113,7 @@
 
           // 计算偏移的毫秒数
           var offsetMs =
-            (beijingTimezoneOffset - deviceTimezoneOffset) * 60 * 1000
+            (deviceTimezoneOffset - beijingTimezoneOffset) * 60 * 1000
 
           // 创建调整后的日期对象
           var beijingTime = new Date(utcNow.getTime() + offsetMs)
@@ -136,8 +136,8 @@
             }
           }
 
-          // 每秒执行一次时间获取
-          tickInterval = setInterval(tick, 1000)
+          // 每10秒执行一次时间获取
+          tickInterval = setInterval(tick, 5000)
         } catch (error) {
           logStatus('更新失败: ' + error.message)
         }
