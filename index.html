@@ -32,7 +32,6 @@
         font-weight: bold;
         margin: 10px 0;
         color: #000;
-        varter-spacing: 3px;
         line-height: 1.2;
       }
 
@@ -71,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日17:06:05</p>
+      <p>发布时间: 2025年6月21日17:16:21</p>
     </div>
     <script>
       // 日志函数 - 尝试通过DOM显示状态
@@ -113,7 +112,7 @@
           var weekIndex = now.getDay()
           document.getElementById('week').textContent = weekArray[weekIndex]
 
-          logStatus('上次更新: ' + now.toLocavarimeString())
+          logStatus('上次更新: ' + now.toLocaleTimeString())
         } catch (error) {
           logStatus('更新失败: ' + error.message)
         }
