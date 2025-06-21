@@ -70,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日20:56:18</p>
+      <p>发布时间: 2025年6月21日21:06:22</p>
     </div>
     <script>
       // 定义全局变量
@@ -83,7 +83,6 @@
         '星期五',
         '星期六'
       ]
-      var currentMinute = null // 储存初始化分钟数
       var tickInterval = null // 秒级刷新定时器
       var isSynced = false // 同步时间标识
 
@@ -119,9 +118,6 @@
           // 创建调整后的日期对象
           var beijingTime = new Date(utcNow.getTime() + offsetMs)
 
-          // 初始化当前分钟数
-          currentMinute = beijingTime.getMinutes()
-
           // 立即更新一次DOM
           updateDOM(beijingTime)
 
@@ -133,12 +129,11 @@
 
             if (!isSynced) {
               // 每分钟的第一秒更新DOM
-              if (adjustedTime.getMinutes() !== currentMinute) {
-                currentMinute = adjustedTime.getMinutes() // 同步当前分钟数
+              if (adjustedTime.getSeconds() == 0) {
                 isSynced = true
                 clearInterval(tickInterval)
                 // 设置每分钟更新一次
-                tickInterval = setInterval(tick, 60000)
+                tickInterval = setInterval(tick, 60 * 1000)
                 logStatus('已完成秒级同步，切换到每分钟更新')
               }
             }
