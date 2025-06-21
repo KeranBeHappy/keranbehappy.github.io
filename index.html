@@ -70,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日17:16:21</p>
+      <p>发布时间: 2025年6月21日17:20:20</p>
     </div>
     <script>
       // 日志函数 - 尝试通过DOM显示状态
@@ -96,16 +96,26 @@
           var hours = now.getHours()
           var minutes = now.getMinutes()
 
-          hours = hours < 10 ? '0' + hours : hours
-          minutes = minutes < 10 ? '0' + minutes : minutes
+          if (hours < 10) {
+            hours = '0' + hours
+          }
+          if (minutes < 10) {
+            minutes = '0' + minutes
+          }
 
           document.getElementById('time').textContent = hours + ':' + minutes
 
           var year = now.getFullYear()
           var month = now.getMonth() + 1
           var day = now.getDate()
-          month = month < 10 ? '0' + month : month
-          day = day < 10 ? '0' + day : day
+
+          if (month < 10) {
+            month = '0' + month
+          }
+
+          if (day < 10) {
+            day = '0' + day
+          }
           document.getElementById('date').textContent =
             year + '年' + month + '月' + day + '日'
 
