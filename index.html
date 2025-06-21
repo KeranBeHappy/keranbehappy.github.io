@@ -70,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日20:30:16</p>
+      <p>发布时间: 2025年6月21日20:33:46</p>
     </div>
     <script>
       // 定义全局变量
@@ -79,7 +79,7 @@
         '星期一',
         '星期二',
         '星期三',
-        '星期四',
+        '疯狂星期四',
         '星期五',
         '星期六'
       ]
@@ -127,7 +127,7 @@
           // 每秒执行的轻量级时间获取
           function tick() {
             var now = new Date()
-            var adjustedTime = new Date(utcNow.getTime() + offsetMs)
+            var adjustedTime = new Date(now.getTime() + offsetMs)
 
             // 每分钟的第一秒更新DOM
             if (adjustedTime.getMinutes() !== currentMinute) {
