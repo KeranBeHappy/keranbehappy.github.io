@@ -70,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日17:20:20</p>
+      <p>发布时间: 2025年6月21日17:26:11</p>
     </div>
     <script>
       // 日志函数 - 尝试通过DOM显示状态
@@ -80,6 +80,7 @@
           statusEl.textContent = message
         }
       }
+
       var weekArray = [
         '星期日',
         '星期一',
@@ -93,8 +94,22 @@
       function updateTime() {
         try {
           var now = new Date()
-          var hours = now.getHours()
-          var minutes = now.getMinutes()
+
+          // 获取设备当前时区偏移（分钟）
+          var deviceTimezoneOffset = now.getTimezoneOffset()
+
+          // 计算北京时间偏移（UTC+8，即-480分钟）
+          var beijingTimezoneOffset = -480
+
+          // 计算需要调整的毫秒数
+          var offsetMs =
+            (beijingTimezoneOffset - deviceTimezoneOffset) * 60 * 1000
+
+          // 创建调整后的日期对象
+          var adjustedDate = new Date(now.getTime() + offsetMs)
+
+          var hours = adjustedDate.getHours()
+          var minutes = adjustedDate.getMinutes()
 
           if (hours < 10) {
             hours = '0' + hours
@@ -105,9 +120,9 @@
 
           document.getElementById('time').textContent = hours + ':' + minutes
 
-          var year = now.getFullYear()
-          var month = now.getMonth() + 1
-          var day = now.getDate()
+          var year = adjustedDate.getFullYear()
+          var month = adjustedDate.getMonth() + 1
+          var day = adjustedDate.getDate()
 
           if (month < 10) {
             month = '0' + month
@@ -119,10 +134,10 @@
           document.getElementById('date').textContent =
             year + '年' + month + '月' + day + '日'
 
-          var weekIndex = now.getDay()
+          var weekIndex = adjustedDate.getDay()
           document.getElementById('week').textContent = weekArray[weekIndex]
 
-          logStatus('上次更新: ' + now.toLocaleTimeString())
+          logStatus('上次更新: ' + adjustedDate.toLocaleTimeString())
         } catch (error) {
           logStatus('更新失败: ' + error.message)
         }
