@@ -73,7 +73,6 @@
       <p>发布时间: 2025年6月21日18:02:32</p>
     </div>
     <script>
-      // 日志函数 - 尝试通过DOM显示状态
       function logStatus(message) {
         var statusEl = document.getElementById('status')
         if (statusEl) {
@@ -91,17 +90,16 @@
         '星期六'
       ]
 
-      function getTimeBySecond(status) {
+      function getClock() {
         try {
           // 获取当前UTC时间
           var utcNow = new Date()
-
           // 添加8小时偏移量（UTC+8）
           var beijingTime = new Date(utcNow.getTime() + 8 * 60 * 60 * 1000)
-
           var seconds = beijingTime.getSeconds()
 
-          if (status === 'init' || seconds == 0) {
+          // 同步时间函数
+          var updateTime = function () {
             // 同步时分
             var hours = beijingTime.getHours()
             var minutes = beijingTime.getMinutes()
@@ -125,37 +123,63 @@
             if (day < 10) {
               day = '0' + day
             }
-            document.getElementById('date').textContent =  year + '年' + month + '月' + day + '日'
+            document.getElementById('date').textContent =
+              year + '年' + month + '月' + day + '日'
 
             // 同步星期
             var weekIndex = beijingTime.getDay()
             document.getElementById('week').textContent = weekArray[weekIndex]
 
-            logStatus('上次更新: ' + beijingTime.toLocaleTimeString())
+            if (clockStatus === 'run') {
+              logStatus('上次更新: ' + beijingTime.toLocaleTimeString())
+            }
+          }
+
+          if (clockStatus === 'init') {
+            if (seconds == 0) {
+              clockStatus = 'run'
+              clearInterval(setInterval1)
+              clearTimeout(setTimeout1)
+              init()
+            }
+            updateTime()
+          } else {
+            updateTime()
           }
         } catch (error) {
           logStatus('更新失败: ' + error.message)
         }
       }
 
-      try {
-        getTimeBySecond('init')
-        logStatus('时钟已启动，每分钟更新一次')
-
-        // 使用不同的定时器实现方式
-        if (typeof setInterval === 'function') {
-          setInterval(getTimeBySecond, 1000)
-        } else {
-          // 备用方案：使用setTimeout循环
-          function loopUpdate() {
-            getTimeBySecond()
-            setTimeout(loopUpdate, 1000)
-          }
-          setTimeout(loopUpdate, 1000)
-        }
-      } catch (error) {
-        logStatus('初始化失败: ' + error.message)
+      var clockStatus = 'init'
+      var clockRefreshInterval = {
+        init: 1000, // 初始化以1秒的间隔获取时间，当秒数为0，立即更新页面，旨在同步分钟数
+        run: 60 * 1000
       }
+      var setInterval1
+      var setTimeout1
+
+      function init() {
+        try {
+          getClock()
+          logStatus('时钟已启动，每分钟更新一次')
+
+          // 使用不同的定时器实现方式
+          if (typeof setInterval === 'function') {
+            setInterval1 = setInterval( getClock, clockRefreshInterval[clockStatus] )
+          } else {
+            // 备用方案：使用setTimeout循环
+            function loopUpdate() {
+              getClock()
+              setTimeout1 = setTimeout( loopUpdate, clockRefreshInterval[clockStatus] )
+            }
+            setTimeout1 = setTimeout( loopUpdate, clockRefreshInterval[clockStatus] )
+          }
+        } catch (error) {
+          logStatus('初始化失败: ' + error.message)
+        }
+      }
+      init()
     </script>
   </body>
 </html>
