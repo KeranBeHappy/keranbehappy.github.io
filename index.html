@@ -70,7 +70,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日18:02:32</p>
+      <p>发布时间: 2025年6月21日18:36:52</p>
     </div>
     <script>
       function logStatus(message) {
@@ -167,8 +167,7 @@
           // 使用不同的定时器实现方式
           if (typeof setInterval === 'function') {
             setInterval1 = setInterval( getClock, clockRefreshInterval[clockStatus] )
-          } else {
-            // 备用方案：使用setTimeout循环
+          } else {// 备用方案：使用setTimeout循环
             function loopUpdate() {
               getClock()
               setTimeout1 = setTimeout( loopUpdate, clockRefreshInterval[clockStatus] )
