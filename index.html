@@ -49,8 +49,8 @@
       }
 
       .note {
-        font-size: 0.9rem;
-        color: #999;
+        font-size: 1rem;
+        color: #666;
         margin-top: 15px;
         line-height: 1.4;
         padding: 0 10px;
@@ -69,7 +69,7 @@
     </div>
     <div class="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月21日21:13:15</p>
+      <p>发布时间: 2025年6月22日16:43:15</p>
     </div>
     <script>
       // 定义全局变量
@@ -83,7 +83,7 @@
         '星期六'
       ]
       var tickInterval = null // 秒级刷新定时器
-      var isSynced = false // 同步时间标识
+      var lastMinutes = null // 存储上一次分钟数
 
       // 日志函数实现
       function logStatus(message) {
@@ -124,20 +124,15 @@
           function tick() {
             var now = new Date()
             var adjustedTime = new Date(now.getTime() + offsetMs)
-            if (adjustedTime.getMinutes() === beijingTime.getMinutes()) {
+            if (adjustedTime.getMinutes() == lastMinutes) {
+              console.log('@print 旧分钟:')
               return
             }
+            console.log('@print 新分钟:')
 
-            updateDOM(adjustedTime)
-            if (!isSynced) {
-              // 每分钟的第一秒更新DOM
-              if (adjustedTime.getSeconds() == 0) {
-                isSynced = true
-                clearInterval(tickInterval)
-                // 设置每分钟更新一次
-                tickInterval = setInterval(tick, 60 * 1000)
-                logStatus('已完成秒级同步，切换到每分钟更新')
-              }
+            // 每分钟的第一秒更新DOM
+            if (adjustedTime.getSeconds() == 0) {
+              updateDOM(adjustedTime)
             }
           }
 
@@ -153,7 +148,7 @@
         try {
           var hours = time.getHours()
           var minutes = time.getMinutes()
-
+          lastMinutes = time.getMinutes() // 同步上一次分钟数
           // 更新时间
           if (hours < 10) {
             hours = '0' + hours
@@ -182,11 +177,7 @@
           document.getElementById('week').textContent = weekArray[weekIndex]
 
           // 使用调整后的时间更新状态
-          if (!isSynced) {
-            logStatus('开始同步时间，每秒更新一次...')
-          } else {
-            logStatus('上次更新: ' + time.toLocaleTimeString())
-          }
+          logStatus('上次更新: ' + time.toLocaleTimeString())
         } catch (error) {
           logStatus('DOM更新失败: ' + error.message)
         }
