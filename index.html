@@ -130,20 +130,15 @@
 
       // 设置缩放
       function setScale() {
-        var wah = getViewportSize()
-        var viewportWidth = wah.width
-        var viewportHeight = wah.height
+        var viewportWidth = window.screen.availWidth
+        var viewportHeight = window.screen.availHeight
         document.getElementById('screen').textContent =
           '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
 
         var widthScale = viewportWidth / 600
         var heightScale = viewportHeight / 750
 
-        // 获取元素
-        var element = document.getElementById('content')
-
-        // 设置缩放
-        element.style.transform =
+        document.getElementById('content').style.transform =
           'scale(' + Math.min(widthScale, heightScale) + ')'
       }
       setScale()
