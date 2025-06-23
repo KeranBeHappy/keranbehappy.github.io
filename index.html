@@ -111,8 +111,8 @@
         document.getElementById('screen').textContent =
           '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
 
-        var widthScale = viewportWidth / 600
-        var heightScale = viewportHeight / 750
+        var widthScale = (viewportWidth / 600) * 2
+        var heightScale = (viewportHeight / 750) * 2
 
         document.getElementById('content').style.transform =
           'scale(' + Math.min(widthScale, heightScale) + ')'
