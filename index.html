@@ -109,13 +109,13 @@
         var viewportWidth = window.screen.availWidth
         var viewportHeight = window.screen.availHeight
         document.getElementById('screen').textContent =
-          '屏幕像素为：' + window.screen.availWidth + 'px * ' + window.screen.availHeight + 'px'
+          '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
 
-        // var widthScale = viewportWidth / 600
-        // var heightScale = viewportHeight / 750
+        var widthScale = viewportWidth / 600
+        var heightScale = viewportHeight / 750
 
-        // document.getElementById('content').style.transform =
-        //   'scale(' + Math.min(widthScale, heightScale) + ')'
+        document.getElementById('content').style.transform =
+          'scale(' + Math.min(widthScale, heightScale) + ')'
       }
       setScale()
 
