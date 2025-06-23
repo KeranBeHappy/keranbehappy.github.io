@@ -104,36 +104,12 @@
       var tickInterval = null // 秒级刷新定时器
       var lastMinutes = null // 存储上一次分钟数
 
-      // 获取屏幕尺寸
-      function getViewportSize() {
-        var width, height
-
-        if (typeof window.innerWidth !== 'undefined') {
-          // 现代浏览器
-          width = window.innerWidth
-          height = window.innerHeight
-        } else if (
-          typeof document.documentElement !== 'undefined' &&
-          typeof document.documentElement.clientWidth !== 'undefined'
-        ) {
-          // IE6+ 在标准模式下
-          width = document.documentElement.clientWidth
-          height = document.documentElement.clientHeight
-        } else {
-          // 旧版浏览器回退
-          width = document.body.clientWidth
-          height = document.body.clientHeight
-        }
-
-        return { width, height }
-      }
-
       // 设置缩放
       function setScale() {
         // var viewportWidth = window.screen.availWidth
         // var viewportHeight = window.screen.availHeight
-        // document.getElementById('screen').textContent =
-        //   '屏幕像素为：' + window.screen + 'px * ' + window.screen + 'px'
+        document.getElementById('screen').textContent =
+          '屏幕像素为：' + window.screen + 'px * ' + window.screen + 'px'
 
         // var widthScale = viewportWidth / 600
         // var heightScale = viewportHeight / 750
