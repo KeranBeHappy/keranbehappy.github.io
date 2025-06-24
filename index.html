@@ -93,7 +93,7 @@
       var tickInterval = null // 秒级刷新定时器
       var lastMinutes = null // 存储上一次分钟数
 
-      var reference = { // 我的设备像素
+      var kindleDevice = { // 我的设备像素
         width: 1072,
         height: 1448
       }
@@ -105,8 +105,8 @@
         document.getElementById('screen').textContent =
           '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
 
-        var widthScale = viewportWidth / 1072
-        var heightScale = viewportHeight / (1448)
+        var widthScale = viewportWidth*2 / kindleDevice.width
+        var heightScale = viewportHeight*2 / kindleDevice.height
         var minScale = Math.min(widthScale, heightScale)
 
         document.getElementById('clock-container').style.transform =
