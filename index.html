@@ -98,23 +98,23 @@
         height: 1448
       }
 
-            // 设置缩放
-      function setScale() {
-        var viewportWidth = window.screen.availWidth
-        var viewportHeight = window.screen.availHeight
-        document.getElementById('screen').textContent =
-          '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
+      // 设置缩放
+      // function setScale() {
+      //   var viewportWidth = window.screen.availWidth
+      //   var viewportHeight = window.screen.availHeight
+      //   document.getElementById('screen').textContent =
+      //     '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
 
-        var widthScale = viewportWidth*2 / kindleDevice.width
-        var heightScale = viewportHeight*2 / kindleDevice.height
-        var minScale = Math.min(widthScale, heightScale)
+      //   var widthScale = viewportWidth / kindleDevice.width
+      //   var heightScale = viewportHeight / kindleDevice.height
+      //   var minScale = Math.min(widthScale, heightScale)
 
-        document.getElementById('clock-container').style.transform =
-          'scale(' + minScale + ')'
-        document.getElementById('note').style.transform =
-          'scale(' + minScale + ')'
-      }
-      setScale()
+      //   document.getElementById('clock-container').style.transform =
+      //     'scale(' + minScale + ')'
+      //   document.getElementById('note').style.transform =
+      //     'scale(' + minScale + ')'
+      // }
+      // setScale()
 
 
       // 日志函数实现
