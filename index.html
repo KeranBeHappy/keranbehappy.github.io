@@ -27,12 +27,13 @@
       }
       .title-display {
         padding: 40px 0 40px;
-        font-size: 35px; 
+        font-size: 33px;
         /* 1.3rem */
+        font-weight: bold;
       }
 
       .time-display {
-        font-size: 410px;
+        font-size: 384px;
         /* 15rem */
         font-weight: bold;
         padding: 10px 0;
@@ -41,14 +42,14 @@
       }
 
       .date-display {
-        font-size: 140px;
+        font-size: 128px;
         /* 5rem */
         padding: 10px 0 10px;
         color: #333;
       }
 
       .week-display {
-        font-size: 110px;
+        font-size: 103px;
         /* 4rem */
         padding: 10px 0 10px;
         color: #666;
@@ -57,7 +58,7 @@
       }
 
       .note {
-        font-size: 28px;
+        font-size: 26px;
         /* 1rem */
         color: #666;
         line-height: 1.4;
@@ -73,7 +74,7 @@
   </head>
   <body>
     <div class="clock-container" id="clock-container">
-      <h3 class="title-display" id="title">Kindle电子时钟</h3>
+      <div class="title-display" id="title">Kindle电子时钟</div>
       <div class="time-display" id="time">00:00</div>
       <div class="date-display" id="date">2025年01月01日</div>
       <div class="week-display" id="week">星期六</div>
@@ -107,12 +108,24 @@
       function setScale() {
         var viewportWidth = window.screen.availWidth
         var viewportHeight = window.screen.availHeight
-        document.getElementById('screen').textContent =
-          '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
 
         var widthScale = viewportWidth / kindleDevice.width
         var heightScale = viewportHeight / kindleDevice.height
         var minScale = Math.min(widthScale, heightScale)
+
+        document.getElementById('screen').textContent =
+          '屏幕像素为：' +
+          viewportWidth +
+          'px * ' +
+          viewportHeight +
+          'px ，缩放系数为：' +
+          minScale
+
+        document.getElementById('title').style.fontSize = 33 * minScale + 'px'
+        document.getElementById('time').style.fontSize = 384 * minScale + 'px'
+        document.getElementById('date').style.fontSize = 128 * minScale + 'px'
+        document.getElementById('week').style.fontSize = 103 * minScale + 'px'
+        document.getElementById('note').style.fontSize = 26 * minScale + 'px'
       }
       setScale()
 
