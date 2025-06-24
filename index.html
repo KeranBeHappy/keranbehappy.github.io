@@ -119,7 +119,7 @@
           'px * ' +
           viewportHeight +
           'px ，缩放系数为：' +
-          minScale
+          Math.round(minScale * 100) / 100
 
         document.getElementById('title').style.fontSize = 33 * minScale + 'px'
         document.getElementById('time').style.fontSize = 384 * minScale + 'px'
