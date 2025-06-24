@@ -25,51 +25,63 @@
         border-radius: 8px;
         padding-top: 20px;
       }
+      .title-display {
+        padding: 40px 0 40px;
+        font-size: 35px; 
+        /* 1.3rem */
+      }
 
       .time-display {
-        font-size: 15rem;
+        font-size: 410px;
+        /* 15rem */
         font-weight: bold;
-        margin: 10px 0;
+        padding: 10px 0;
         color: #000;
         line-height: 1.2;
       }
 
       .date-display {
-        font-size: 5rem;
-        margin: 10px 0 5px;
+        font-size: 140px;
+        /* 5rem */
+        padding: 10px 0 10px;
         color: #333;
       }
 
       .week-display {
-        font-size: 4rem;
-        margin: 5px 0 15px;
+        font-size: 110px;
+        /* 4rem */
+        padding: 10px 0 10px;
         color: #666;
         font-style: normal;
         font-style: italic;
       }
 
       .note {
-        font-size: 1rem;
+        font-size: 28px;
+        /* 1rem */
         color: #666;
-        margin-top: 15px;
         line-height: 1.4;
-        padding: 0 10px;
         font-style: italic;
+      }
+      .note > div {
+        padding-bottom: 5px;
+      }
+      .note > div:nth-last-child(1) {
+        padding-bottom: 0px;
       }
     </style>
   </head>
   <body>
-    <div class="clock-container">
-      <h3 style="color: #004b8d; margin: 5vh 0 5vh; font-size: 1.3rem">
-        Kindle电子时钟
-      </h3>
+    <div class="clock-container" id="clock-container">
+      <h3 class="title-display" id="title">Kindle电子时钟</h3>
       <div class="time-display" id="time">00:00</div>
       <div class="date-display" id="date">2025年01月01日</div>
       <div class="week-display" id="week">星期六</div>
     </div>
-    <div class="note">
+    <div class="note" id="note">
       <div class="status" id="status">初始化中...</div>
-      <p>发布时间: 2025年6月22日16:48:21</p>
+      <div class="screen" id="screen"></div>
+      <div>发布时间: 2025年6月22日16:48:21</div>
     </div>
     <script>
       // 定义全局变量
@@ -84,6 +96,31 @@
       ]
       var tickInterval = null // 秒级刷新定时器
       var lastMinutes = null // 存储上一次分钟数
+
+      var kindleDevice = {
+        // 我的设备像素
+        width: 1072,
+        height: 1448
+      }
+
+      // 设置缩放
+      function setScale() {
+        var viewportWidth = window.screen.availWidth
+        var viewportHeight = window.screen.availHeight
+        document.getElementById('screen').textContent =
+          '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
+
+        var widthScale = viewportWidth / kindleDevice.width
+        var heightScale = viewportHeight / kindleDevice.height
+        var minScale = Math.min(widthScale, heightScale)
+
+        document.getElementById('title').style.fontSize = 35 * minScale + 'px'
+        document.getElementById('time').style.fontSize = 410 * minScale + 'px'
+        document.getElementById('date').style.fontSize = 140 * minScale + 'px'
+        document.getElementById('week').style.fontSize = 110 * minScale + 'px'
+        document.getElementById('note').style.fontSize = 28 * minScale + 'px'
+      }
+      setScale()
 
       // 日志函数实现
       function logStatus(message) {
