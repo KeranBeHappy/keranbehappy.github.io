@@ -110,10 +110,9 @@
         var heightScale = viewportHeight / kindleDevice.height
         var minScale = Math.min(widthScale, heightScale)
 
-        // document.getElementById('clock-container').style.transform =
-        //   'scale(' + minScale + ')'
-        document.getElementById('title').style.fontSize = 20 * minScale + 'px'
-        document.getElementById('time').style.fontSize = 240 * minScale + 'px'
+        document.getElementById('clock-container').style.transform = 'scale(2)'
+        // document.getElementById('title').style.fontSize = 20 * minScale + 'px'
+        // document.getElementById('time').style.fontSize = 240 * minScale + 'px'
       }
       setScale()
 
