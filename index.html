@@ -93,29 +93,29 @@
       var tickInterval = null // 秒级刷新定时器
       var lastMinutes = null // 存储上一次分钟数
 
-      var kindleDevice = { // 我的设备像素
+      var kindleDevice = {
+        // 我的设备像素
         width: 1072,
         height: 1448
       }
 
       // 设置缩放
-      // function setScale() {
-      //   var viewportWidth = window.screen.availWidth
-      //   var viewportHeight = window.screen.availHeight
-      //   document.getElementById('screen').textContent =
-      //     '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
+      function setScale() {
+        var viewportWidth = window.screen.availWidth
+        var viewportHeight = window.screen.availHeight
+        document.getElementById('screen').textContent =
+          '屏幕像素为：' + viewportWidth + 'px * ' + viewportHeight + 'px'
 
-      //   var widthScale = viewportWidth / kindleDevice.width
-      //   var heightScale = viewportHeight / kindleDevice.height
-      //   var minScale = Math.min(widthScale, heightScale)
+        var widthScale = viewportWidth / kindleDevice.width
+        var heightScale = viewportHeight / kindleDevice.height
+        var minScale = Math.min(widthScale, heightScale)
 
-      //   document.getElementById('clock-container').style.transform =
-      //     'scale(' + minScale + ')'
-      //   document.getElementById('note').style.transform =
-      //     'scale(' + minScale + ')'
-      // }
-      // setScale()
-
+        // document.getElementById('clock-container').style.transform =
+        //   'scale(' + minScale + ')'
+        document.getElementById('title').style.fontSize = 20 * minScale + 'px'
+        document.getElementById('time').style.fontSize = 240 * minScale + 'px'
+      }
+      setScale()
 
       // 日志函数实现
       function logStatus(message) {
