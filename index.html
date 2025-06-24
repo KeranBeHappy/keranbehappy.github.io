@@ -111,7 +111,7 @@
 
         var widthScale = viewportWidth / kindleDevice.width
         var heightScale = viewportHeight / kindleDevice.height
-        var minScale = Math.min(widthScale, heightScale)
+        var minScale = Math.round(Math.min(widthScale, heightScale) * 100) / 100
 
         document.getElementById('screen').textContent =
           '屏幕像素为：' +
@@ -119,7 +119,7 @@
           'px * ' +
           viewportHeight +
           'px ，缩放系数为：' +
-          Math.round(minScale * 100) / 100
+          minScale
 
         document.getElementById('title').style.fontSize = 33 * minScale + 'px'
         document.getElementById('time').style.fontSize = 384 * minScale + 'px'
